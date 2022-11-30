@@ -1,0 +1,18 @@
+# IO Topics
+bf_to_map_init_topic: "/amcl_pose"  # optional
+pose_estimate_topic:  "/odom_logger/pose_estimate"
+path_estimate_topic:  "/odom_logger/path_estimate"
+odom_topic:           "/odom"
+odometry_reset_topic: "/mobile_base/commands/reset_odometry"
+
+# Frames' parameters
+# The fsm_lidom_node publishes:
+# (a) The transform between consecutive laser frames in the form of a tf
+# from `base_frame_id` to `lidom_frame_id`
+# (b) The transform between consecutive laser frames in the form of a message
+# (nav_msgs/Odometry) from `base_frame_id` to `lidom_frame_id`, and
+# (c) The current pose estimate with respect to a global frame
+global_frame_id: 'map'
+base_frame_id:   'base_footprint'
+odom_frame_id:   'odom'
+init_frame_id:   'odom_static'
