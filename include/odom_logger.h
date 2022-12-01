@@ -54,12 +54,8 @@ class OdomLogger
     // Odom topic subscriber
     ros::Subscriber odom_sub_;
 
-    // Odom reset publisher
-    ros::Publisher odom_reset_pub_;
-
     // Path estimate publisher
     ros::Publisher path_estimate_pub_;
-
 
     // Clearing the estimated trajectory service
     ros::ServiceServer clear_trajectory_service_;
@@ -73,15 +69,8 @@ class OdomLogger
     // Stops lidar odometry
     ros::ServiceServer stop_service_;
 
-
     // The topic where odom messages crash
     std::string odom_topic_;
-
-    // The topic where odometry is reset
-    std::string odometry_reset_topic_;
-
-    // The topic where the initial pose may be provided (optional)
-    std::string bf_to_map_init_topic_;
 
     // The topic where fsm's path estimate is published
     std::string path_estimate_topic_;
@@ -91,12 +80,6 @@ class OdomLogger
     // Locks callback execution
     bool lock_;
 
-    // Previous odom receipt time
-    ros::Time tv_;
-
-    // Current odom receipt time
-    ros::Time tr_;
-
     // The origin (0,0,0)
     std::tuple<double,double,double> origin;
 
@@ -105,12 +88,6 @@ class OdomLogger
 
     // initial odometry
     std::tuple<double,double,double> bf_to_odom_init_;
-
-    // The transform
-    Eigen::Matrix3d M;
-
-    // The path estimate
-    std::vector< std::tuple<double,double,double> > path_estimate_;
 
     // The path estimate
     nav_msgs::Path path_estimate_msg_;
@@ -124,8 +101,11 @@ class OdomLogger
     // The init frame name
     std::string init_frame_id_;
 
-    // Lidar odometry frame name
+    // odometry frame name
     std::string odom_frame_id_;
+
+    // what is published in the end is referent_frame_id_ <-- odom_footprint
+    std::string referent_frame_id_;
 
     // log path
     std::string log_path_;
@@ -136,13 +116,14 @@ class OdomLogger
     tf2_ros::TransformBroadcaster tf_broadcaster_;
     tf2_ros::StaticTransformBroadcaster tfstatic_broadcaster_;
 
+    // The transforms map <-- base_footprint and odom <-- base_footprint
+    // at the time when the new odometry frame odom_static frame is conceived
     tf::Transform binit_to_map_tf_;
     tf::Transform binit_to_odom_tf_;
+    geometry_msgs::TransformStamped::Ptr logged_transform_ptr_;
 
     // **** methods
-
-    Eigen::Matrix3d computeTransform(const std::tuple<double,double,double>& d,
-      const Eigen::Matrix3d& M);
+    bool computeOdom();
 
     double extractYawFromPose( const geometry_msgs::Pose& pose);
     double extractYawFromQuaternion(const geometry_msgs::Quaternion& quat);
@@ -150,18 +131,13 @@ class OdomLogger
     bool getTransform(
       const std::string &frame1,
       const std::string &frame2,
-      geometry_msgs::TransformStamped* lg);
+      geometry_msgs::TransformStamped::Ptr lg);
 
 
     void initParams();
     void initPSS();
 
-    void logOdom();
     void logOdomPose();
-
-    Eigen::Matrix3d poseToTransformMatrix(
-      const std::tuple<double,double,double>& pose);
-
     void publishOdomPathMessage();
 
     geometry_msgs::Pose retypePose(
@@ -183,9 +159,6 @@ class OdomLogger
     bool serviceStop(
       std_srvs::Empty::Request &req,
       std_srvs::Empty::Response &res);
-
-    std::tuple<double,double,double> transformMatrixToPose(
-      const Eigen::Matrix3d& M);
 
     void odomCallback(const nav_msgs::Odometry::Ptr& odom_msg);
     void wrapAngle(double* angle);

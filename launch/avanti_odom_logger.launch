@@ -2,7 +2,7 @@
 
   <node name="odom_logger_node" pkg="odom_logger" type="odom_logger_node" output="screen">
     <param name="pkg_name"   type="string" value="odom_logger" />
-    <param name="log_path"   type="string" value="$(find  odom_logger)/results/odometry.txt" />
+    <param name="log_path"   type="string" value="$(find odom_logger)/results/odometry.txt" />
     <rosparam command="load" file="$(find odom_logger)/config/params.yaml" />
   </node>
 
