@@ -18,9 +18,10 @@ OdomLogger::OdomLogger(ros::NodeHandle nh, ros::NodeHandle nh_private) :
   // init publishers, subscribers, and services
   initPSS();
 
-  ROS_INFO("[%s] Init-ed.",                                   PKG_NAME.c_str());
-  ROS_INFO("[%s] To start production of lidar odometry issue",PKG_NAME.c_str());
-  ROS_INFO("%*s rosservice call /odom_logger/start", (int)(PKG_NAME.size()+2),"");
+  ROS_INFO("[%s] Init-ed.",                        PKG_NAME.c_str());
+  ROS_INFO("[%s] To start logging odometry issue", PKG_NAME.c_str());
+  ROS_INFO("%*s rosservice call /odom_logger/start_logging",
+    (int)(PKG_NAME.size()+2),"");
 }
 
 
@@ -234,11 +235,11 @@ OdomLogger::initPSS()
 
   // Start service
   start_service_= nh_.advertiseService(
-    "odom_logger/start", &OdomLogger::serviceStart, this);
+    "odom_logger/start_logging", &OdomLogger::serviceStart, this);
 
   // Stop service
   stop_service_= nh_.advertiseService(
-    "odom_logger/stop", &OdomLogger::serviceStop, this);
+    "odom_logger/stop_logging", &OdomLogger::serviceStop, this);
 
   // the path estimate
   path_estimate_pub_ =
@@ -437,7 +438,8 @@ OdomLogger::serviceStart(std_srvs::Empty::Request &req,
 {
   ROS_INFO("[%s] odometry is now being logged.",    PKG_NAME.c_str());
   ROS_INFO("[%s] To shut down issue",               PKG_NAME.c_str());
-  ROS_INFO("%*s rosservice call /odom_logger/stop", (int)(PKG_NAME.size()+2),"");
+  ROS_INFO("%*s rosservice call /odom_logger/stop_logging",
+    (int)(PKG_NAME.size()+2),"");
   lock_ = false;
 
   return true;
@@ -453,7 +455,8 @@ OdomLogger::serviceStop(std_srvs::Empty::Request &req,
 {
   ROS_INFO("[%s] odometry logging is shut down.",    PKG_NAME.c_str());
   ROS_INFO("[%s] To bring up issue",                 PKG_NAME.c_str());
-  ROS_INFO("%*s rosservice call /odom_logger/start", (int)(PKG_NAME.size()+2),"");
+  ROS_INFO("%*s rosservice call /odom_logger/start_logging",
+    (int)(PKG_NAME.size()+2),"");
   lock_ = true;
 
   return true;
