@@ -39,7 +39,8 @@ OdomLogger::computeOdom()
   // odom <-- base_footprint tf message
   geometry_msgs::TransformStamped::Ptr bf_to_odom_tf_msg =
     boost::make_shared<geometry_msgs::TransformStamped>();
-  if (getTransform(odom_frame_id_,base_frame_id_, bf_to_odom_tf_msg))
+  if (getTransform(odom_frame_id_,base_frame_id_, ros::Time::now(),
+      bf_to_odom_tf_msg))
   {
     // odom <-- base_footprint tf
     tf::Transform bf_to_odom_tf;
@@ -66,7 +67,8 @@ OdomLogger::computeOdom()
 
     // Return the desired transform `referent_frame_id_` <-- odom_footprint
     logged_transform_ptr_ = boost::make_shared<geometry_msgs::TransformStamped>();
-    if (getTransform(referent_frame_id_, "odom_footprint", logged_transform_ptr_))
+    if (getTransform(referent_frame_id_, "odom_footprint",
+       of_to_os_tf_msg_stamped.header.stamp, logged_transform_ptr_))
       return true;
     else
       return false;
@@ -106,13 +108,12 @@ OdomLogger::extractYawFromQuaternion(const geometry_msgs::Quaternion& quat)
 * Returns frame1 <-- frame2 transform
 */
 bool OdomLogger::getTransform(const std::string &frame1,
-  const std::string &frame2, geometry_msgs::TransformStamped::Ptr lg)
+  const std::string &frame2, const ros::Time& t,
+  geometry_msgs::TransformStamped::Ptr lg)
 {
   try
   {
-    *lg = tf_buffer_.lookupTransform(frame1, frame2,
-      ros::Time::now()-ros::Duration(0.1),
-      ros::Duration(0.5));
+    *lg = tf_buffer_.lookupTransform(frame1, frame2, t, ros::Duration(0.5));
     return true;
   }
   catch (tf2::TransformException ex)
@@ -384,7 +385,8 @@ OdomLogger::serviceInitialPose(std_srvs::Empty::Request &req,
   // map <-- base_footprint (init)
   geometry_msgs::TransformStamped::Ptr bf_to_map_tf_msg =
     boost::make_shared<geometry_msgs::TransformStamped>();
-  if (getTransform(global_frame_id_,base_frame_id_, bf_to_map_tf_msg))
+  if (getTransform(global_frame_id_,base_frame_id_, ros::Time::now(),
+      bf_to_map_tf_msg))
   {
     double dx = bf_to_map_tf_msg->transform.translation.x;
     double dy = bf_to_map_tf_msg->transform.translation.y;
@@ -410,7 +412,8 @@ OdomLogger::serviceInitialPose(std_srvs::Empty::Request &req,
   // odom <-- base_footprint (or else odom <-- odom_static)---(init)
   geometry_msgs::TransformStamped::Ptr bf_to_odom_tf_msg =
     boost::make_shared<geometry_msgs::TransformStamped>();
-  if (getTransform(odom_frame_id_,base_frame_id_, bf_to_odom_tf_msg))
+  if (getTransform(odom_frame_id_,base_frame_id_, ros::Time::now(),
+      bf_to_odom_tf_msg))
   {
     double dx = bf_to_odom_tf_msg->transform.translation.x;
     double dy = bf_to_odom_tf_msg->transform.translation.y;

@@ -131,6 +131,7 @@ class OdomLogger
     bool getTransform(
       const std::string &frame1,
       const std::string &frame2,
+      const ros::Time& t,
       geometry_msgs::TransformStamped::Ptr lg);
 
 
