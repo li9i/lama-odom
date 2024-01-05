@@ -10,7 +10,7 @@ robot, and `base_footprint` coincides with `odom`. Your initial pose estimate
 is off and therefore you move the robot slightly to the left and to the right
 and forward and backward, and in the process, since the localisation method
 that you use all the time accounts for odom drift, and motion has happened,
-the two frames no longer coincide. Once initialisation has happened, you know
+the two frames no longer coincide. Once initialisation has happened, you now
 want to know `odom` from here on out with respect to `map` (or the robot's
 initial reliable pose as a reference frame). You issue
 
