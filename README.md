@@ -14,19 +14,19 @@ the two frames no longer coincide. Once initialisation has happened, you now
 want to know `odom` from here on out with respect to `map` (or the robot's
 initial reliable pose as a reference frame). You issue
 
-```
+```console
 roslaunch odom_logger avanti_odom_logger.launch
 ```
 
 and then set the new odom frame to where the robot is by issuing
 
-```
+```console
 rosservice call /odom_logger/set_initial_pose
 ```
 
 When you are indeed ready to log odometry you issue
 
-```
+```console
 rosservice call /odom_logger/start
 ```
 
