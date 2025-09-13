@@ -50,7 +50,6 @@ class OdomLogger
     // Name of this package
     std::string PKG_NAME;
 
-
     // Odom topic subscriber
     ros::Subscriber odom_sub_;
 
@@ -134,7 +133,6 @@ class OdomLogger
       const ros::Time& t,
       geometry_msgs::TransformStamped::Ptr lg);
 
-
     void initParams();
     void initPSS();
 
@@ -163,8 +161,5 @@ class OdomLogger
 
     void odomCallback(const nav_msgs::Odometry::Ptr& odom_msg);
     void wrapAngle(double* angle);
-
-
 };
-
-#endif // ODOM_LOGGER_H
+#endif  // ODOM_LOGGER_H

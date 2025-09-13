@@ -23,15 +23,12 @@ OdomLogger::OdomLogger(ros::NodeHandle nh, ros::NodeHandle nh_private) :
   ROS_INFO("%*s rosservice call /odom_logger/start_logging",
     (int)(PKG_NAME.size()+2),"");
 }
-
-
 /*******************************************************************************
 */
 OdomLogger::~OdomLogger()
 {
   printf("[%s] Destroying OdomLogger\n", PKG_NAME.c_str());
 }
-
 /*******************************************************************************
 */
 bool
@@ -77,8 +74,6 @@ OdomLogger::computeOdom()
 
   return false;
 }
-
-
 /*******************************************************************************
 */
 double
@@ -86,8 +81,6 @@ OdomLogger::extractYawFromPose(const geometry_msgs::Pose& pose)
 {
   return extractYawFromQuaternion(pose.orientation);
 }
-
-
 /*******************************************************************************
 */
 double
@@ -103,8 +96,6 @@ OdomLogger::extractYawFromQuaternion(const geometry_msgs::Quaternion& quat)
 
   return yaw;
 }
-
-
 /*******************************************************************************
 * Returns frame1 <-- frame2 transform
 */
@@ -124,8 +115,6 @@ bool OdomLogger::getTransform(const std::string &frame1,
     return false;
   }
 }
-
-
 /*******************************************************************************
 */
 void
@@ -144,7 +133,6 @@ OdomLogger::initParams()
       PKG_NAME.c_str());
     log_path_ = "/home/relief-user0/catkin_ws/src/odom_logger/results/log.txt";
   }
-
   // ---------------------------------------------------------------------------
   if (!nh_private_.getParam ("path_estimate_topic", path_estimate_topic_))
   {
@@ -153,7 +141,6 @@ OdomLogger::initParams()
     path_estimate_topic_ = "/odom_logger/path_estimate";
 
   }
-
   // ---------------------------------------------------------------------------
   if (!nh_private_.getParam ("odom_topic", odom_topic_))
   {
@@ -161,7 +148,6 @@ OdomLogger::initParams()
       PKG_NAME.c_str());
     odom_topic_ = "/odom";
   }
-
   // ---------------------------------------------------------------------------
   if (!nh_private_.getParam ("global_frame_id", global_frame_id_))
   {
@@ -169,7 +155,6 @@ OdomLogger::initParams()
       PKG_NAME.c_str());
     global_frame_id_ = "map";
   }
-
   // ---------------------------------------------------------------------------
   if (!nh_private_.getParam ("base_frame_id", base_frame_id_))
   {
@@ -177,7 +162,6 @@ OdomLogger::initParams()
       PKG_NAME.c_str());
     base_frame_id_ = "base_footprint";
   }
-
   // ---------------------------------------------------------------------------
   if (!nh_private_.getParam ("odom_frame_id", odom_frame_id_))
   {
@@ -185,7 +169,6 @@ OdomLogger::initParams()
       PKG_NAME.c_str());
     odom_frame_id_ = "odom";
   }
-
   // ---------------------------------------------------------------------------
   // This is the static odometry frame. AKA the pose of base_footprint
   // after amcl has established the pose of the robot (after moving the robot
@@ -196,7 +179,6 @@ OdomLogger::initParams()
       PKG_NAME.c_str());
     init_frame_id_ = "odom_static";
   }
-
   // ---------------------------------------------------------------------------
   // This is the reference frame of the ouput
   if (!nh_private_.getParam ("referent_frame_id", referent_frame_id_))
@@ -214,8 +196,6 @@ OdomLogger::initParams()
   else
     ROS_ERROR("[OdomLogger] logpath file not open");
 }
-
-
 /*******************************************************************************
 */
 void
@@ -245,8 +225,6 @@ OdomLogger::initPSS()
   path_estimate_pub_ =
     nh_.advertise<nav_msgs::Path>(path_estimate_topic_, 1);
 }
-
-
 /*******************************************************************************
  * The current pose estimate with respect to the `referent_frame_id`
  */
@@ -292,8 +270,6 @@ OdomLogger::logOdomPose()
     pose_file.close();
   }
 }
-
-
 /*******************************************************************************
  * The total path estimate with respect to the global frame
  */
@@ -316,8 +292,6 @@ OdomLogger::publishOdomPathMessage()
   path_estimate_msg_.poses.push_back(gmp);
   path_estimate_pub_.publish(path_estimate_msg_);
 }
-
-
 /*******************************************************************************
 */
   geometry_msgs::Pose
@@ -338,8 +312,6 @@ OdomLogger::retypePose(const std::tuple<double,double,double>& pose)
 
   return pose_msg;
 }
-
-
 /*******************************************************************************
 */
   geometry_msgs::PoseStamped
@@ -355,8 +327,6 @@ OdomLogger::retypePoseStamped(const std::tuple<double,double,double>& pose,
 
   return posestamped_msg;
 }
-
-
 /*******************************************************************************
  *
  */
@@ -371,8 +341,6 @@ OdomLogger::serviceClearTrajectory(std_srvs::Empty::Request &req,
 
   return true;
 }
-
-
 /*******************************************************************************
  * If there is an initial pose then set it
  */
@@ -427,8 +395,6 @@ OdomLogger::serviceInitialPose(std_srvs::Empty::Request &req,
 
   return success;
 }
-
-
 /*******************************************************************************
  *
  */
@@ -444,8 +410,6 @@ OdomLogger::serviceStart(std_srvs::Empty::Request &req,
 
   return true;
 }
-
-
 /*******************************************************************************
  *
  */
@@ -461,8 +425,6 @@ OdomLogger::serviceStop(std_srvs::Empty::Request &req,
 
   return true;
 }
-
-
 /*******************************************************************************
 */
   void
@@ -470,8 +432,6 @@ OdomLogger::wrapAngle(double* angle)
 {
   *angle = fmod(*angle + 5*M_PI, 2*M_PI) - M_PI;
 }
-
-
 /*******************************************************************************
 */
   void

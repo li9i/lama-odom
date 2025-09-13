@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(odom_logger)
-
 add_compile_options(-std=c++11 -Ofast)
-
-
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
@@ -16,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   message_generation
 )
-
 catkin_package(
   CATKIN_DEPENDS
   roscpp
@@ -30,19 +26,16 @@ catkin_package(
   tf2_ros
   INCLUDE_DIRS include
 )
-
 INCLUDE_DIRECTORIES(include
   ${catkin_INCLUDE_DIRS}
   /usr/include/eigen3/)
-
-# sm ###########################################################################
+# sm ---------------------------------------------------------------------------
 add_library(odom_logger src/odom_logger.cpp)
 target_link_libraries(odom_logger
   ${catkin_LIBRARIES})
 add_dependencies(odom_logger
   ${catkin_EXPORTED_TARGETS})
-
-# The executable ###############################################################
+# The executable ---------------------------------------------------------------
 add_executable(odom_logger_node
   src/odom_logger_node.cpp)
 
